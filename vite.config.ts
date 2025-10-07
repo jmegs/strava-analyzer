@@ -1,4 +1,3 @@
-import netlifyPlugin from "@netlify/vite-plugin-react-router"
 import { reactRouter } from "@react-router/dev/vite"
 import tailwindcss from "@tailwindcss/vite"
 import { FontaineTransform } from "fontaine"
@@ -14,6 +13,5 @@ export default defineConfig({
 		}),
 		reactRouter(),
 		tsconfigPaths(),
-		netlifyPlugin(),
 	],
 })
