@@ -3,16 +3,27 @@ import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration }
 import type { Route } from "./+types/root"
 import "./app.css"
 
+export function links() {
+	return [
+		{
+			rel: "icon",
+			href: "/icon.svg",
+			type: "image/svg+xml",
+		},
+	]
+}
+
 export function Layout({ children }: { children: React.ReactNode }) {
 	return (
 		<html lang="en">
 			<head>
 				<meta charSet="utf-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
-				<Meta />
+				<title>strava thing</title>
+				<meta name="description" content="llm-friendly strava activity summaries" />
 				<Links />
 			</head>
-			<body>
+			<body className="font-mono text-xs">
 				{children}
 				<ScrollRestoration />
 				<Scripts />

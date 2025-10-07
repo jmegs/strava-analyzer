@@ -19,9 +19,8 @@ export async function loader({ request }: Route.LoaderArgs) {
 
 export default function Login({ loaderData }: Route.ComponentProps) {
 	return (
-		<div className="p-10">
-			<p>Login Page</p>
-			<a href={loaderData.authorizeUrl}>Sign in with Strava</a>
+		<div className="p-2 h-dvh grid place-items-center">
+			<a href={loaderData.authorizeUrl} className="underline">Sign in with Strava</a>
 		</div>
 	)
 }

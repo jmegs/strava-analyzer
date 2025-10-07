@@ -1,5 +1,8 @@
+import { useState } from "react"
 import { redirect } from "react-router"
 import { Strava } from "strava"
+import Polyline from "~/components/polyline"
+import { getWorkoutTypeTag, metersToMiles, secondsToHMS } from "~/util/format"
 import { getSession } from "~/util/session.server"
 import type { Route } from "./+types/home"
 
@@ -18,7 +21,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 		const me = await client.athletes.getLoggedInAthlete()
 		const stats = await client.athletes.getStats({ id: me.id })
 		return {
-			mileage: stats.ytd_run_totals.distance,
+			mileage: metersToMiles(stats.ytd_run_totals.distance).toFixed(1),
 			runs: stats.ytd_run_totals.count,
 		}
 	}
@@ -44,7 +47,61 @@ export async function loader({ request }: Route.LoaderArgs) {
 export default function Home({ loaderData }: Route.ComponentProps) {
 	const { stats, list } = loaderData
 
+	return (
+		<div className="">
+			<header className="md:grid grid-cols-12 p-2 md:px-8 md:mb-[50dvh]">
+				<div className="col-span-4 md:col-span-8 mb-2 md:mb-0">
+					<p className="uppercase tracking-wider">anima sana in corpore sano</p>
+				</div>
+				<p className="col-span-2 md:text-right">{stats.mileage}&nbsp;mi</p>
+				<p className="col-span-2 md:text-right">{stats.runs} runs</p>
+			</header>
+			<ul className="border-t divide-y">
+				{list.map(run => {
+					const { id, name, map, workout_type, start_date_local, distance, moving_time } = run
+					return (
+						<li key={id} className="grid grid-cols-[3fr_1fr_auto] md:grid-cols-12 px-2 md:px-8 py-1 items-center">
+							<div className="hidden md:flex col-span-1">
+								<Polyline summary={map.summary_polyline} />
+							</div>
+
+							<div className="md:col-span-3 pr-2 md:pr-0">
+								<span>{name}</span>
+								<WorkoutTypeTag type={workout_type} />
+							</div>
+							<div className="hidden md:flex col-span-2 md:justify-end">
+								{new Date(start_date_local).toISOString().split("T")[0]}
+							</div>
+							<div className="md:col-span-2 flex md:justify-end">
+								{metersToMiles(distance).toFixed(2)}mi
+							</div>
+							<div className="hidden md:flex col-span-2 md:justify-end">
+								{secondsToHMS(moving_time)}
+							</div>
+							<div className="md:col-span-2 flex justify-end">
+								<CopyRun id={id} />
+							</div>
+						</li>
+					)
+				})}
+			</ul>
+		</div>
+	)
+}
+
+function WorkoutTypeTag({ type }: { type: number }) {
+	return getWorkoutTypeTag(type) && (
+		<span className="ml-2 px-1 py-0.5 text-[9px] uppercase tracking-wide border">
+			{getWorkoutTypeTag(type)}
+		</span>
+	)
+}
+
+function CopyRun({ id }: { id: number }) {
+	const [busy, setBusy] = useState(false)
+
 	const handle = async (activityId: number) => {
+		setBusy(true)
 		// needs to be a native fetch because rr's `fetcher` doesn't return a promise
 		// and safari can't do async clipboard writes
 		const response = await fetch(`/detail/${activityId}`)
@@ -55,25 +112,17 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 		})
 
 		await navigator.clipboard.write([text])
+		setBusy(false)
 	}
 
 	return (
-		<div className="p-10">
-			<p>hello.</p>
-			<pre>
-				{JSON.stringify(stats, null, 2)}
-			</pre>
-			<ul>
-				{list.map(i => {
-					const { id, name } = i
-					return (
-						<li key={id} className="flex gap-2">
-							<p>{name}</p>
-							<button onClick={() => handle(id)}>Deets</button>
-						</li>
-					)
-				})}
-			</ul>
-		</div>
+		<button
+			onClick={() => handle(id)}
+			className="px-2 py-0.5 inline-grid place-items-center border tracking-wide uppercase disabled:opacity-50 hover:opacity-50 cursor-pointer"
+		>
+			<span className="w-[4ch]">
+				{busy ? "...." : "Copy"}
+			</span>
+		</button>
 	)
 }
