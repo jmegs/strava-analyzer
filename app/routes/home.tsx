@@ -43,15 +43,37 @@ export async function loader({ request }: Route.LoaderArgs) {
 
 export default function Home({ loaderData }: Route.ComponentProps) {
 	const { stats, list } = loaderData
+
+	const handle = async (activityId: number) => {
+		// needs to be a native fetch because rr's `fetcher` doesn't return a promise
+		// and safari can't do async clipboard writes
+		const response = await fetch(`/detail/${activityId}`)
+		const data = await response.json()
+
+		const text = new ClipboardItem({
+			"text/plain": new Blob([JSON.stringify(data, null, 2)], { type: "text/plain" }),
+		})
+
+		await navigator.clipboard.write([text])
+	}
+
 	return (
 		<div className="p-10">
 			<p>hello.</p>
 			<pre>
 				{JSON.stringify(stats, null, 2)}
 			</pre>
-			<pre>
-				{JSON.stringify(list, null, 2)}
-			</pre>
+			<ul>
+				{list.map(i => {
+					const { id, name } = i
+					return (
+						<li key={id} className="flex gap-2">
+							<p>{name}</p>
+							<button onClick={() => handle(id)}>Deets</button>
+						</li>
+					)
+				})}
+			</ul>
 		</div>
 	)
 }
