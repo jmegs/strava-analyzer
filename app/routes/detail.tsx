@@ -1,4 +1,4 @@
-import { type DetailedActivity, type Lap, Strava } from "strava"
+import type { DetailedActivity, Lap } from "strava"
 import {
 	getWorkoutTypeTag,
 	metersPerSecondToMinPerMile,
@@ -6,23 +6,12 @@ import {
 	metersToMiles,
 	round2Decimals,
 } from "~/util/format"
-import { getSession } from "~/util/session.server"
+import { getAuthenticatedStravaClient } from "~/util/strava.server"
 import { getWeather } from "~/util/weather.server"
 import type { Route } from "./+types/detail"
 
 export async function loader({ params, request }: Route.LoaderArgs) {
-	const session = await getSession(request.headers.get("Cookie"))
-	const token = session.get("refreshToken")
-
-	if (!token) {
-		throw new Error("No token found")
-	}
-
-	const client = new Strava({
-		client_id: process.env.STRAVA_CLIENT_ID!,
-		client_secret: process.env.STRAVA_CLIENT_SECRET!,
-		refresh_token: token,
-	})
+	const client = await getAuthenticatedStravaClient(request)
 
 	const act = await client.activities.getActivityById({ id: Number(params.id) })
 	const [lat, lng] = act.start_latlng

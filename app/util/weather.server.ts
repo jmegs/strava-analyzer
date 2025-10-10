@@ -1,10 +1,14 @@
-export async function getWeather(params: { lat: number; lng: number; isoUTC: string }) {
+export async function getWeather(params: {
+	lat: number
+	lng: number
+	isoUTC: string
+}) {
 	const when = new Date(params.isoUTC)
 	const y = when.getUTCFullYear()
 	const m = String(when.getUTCMonth() + 1).padStart(2, "0")
 	const d = String(when.getUTCDate()).padStart(2, "0")
 	const dateStr = `${y}-${m}-${d}`
-	const hourStr = String(params.isoUTC).slice(0, 13) + ":00"
+	const hourStr = `${String(params.isoUTC).slice(0, 13)}:00`
 
 	const query = new URLSearchParams({
 		latitude: String(params.lat),

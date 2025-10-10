@@ -1,9 +1,9 @@
 import { useState } from "react"
 import { redirect } from "react-router"
-import { Strava } from "strava"
 import Polyline from "~/components/polyline"
 import { getWorkoutTypeTag, metersToMiles, secondsToHMS } from "~/util/format"
 import { getSession } from "~/util/session.server"
+import { getAuthenticatedStravaClient } from "~/util/strava.server"
 import type { Route } from "./+types/home"
 
 export async function loader({ request }: Route.LoaderArgs) {
@@ -11,11 +11,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 	const loggedIn = session.has("refreshToken")
 	if (!loggedIn) throw redirect("/login")
 
-	const client = new Strava({
-		client_id: process.env.STRAVA_CLIENT_ID!,
-		client_secret: process.env.STRAVA_CLIENT_SECRET!,
-		refresh_token: session.get("refreshToken")!,
-	})
+	const client = await getAuthenticatedStravaClient(request)
 
 	const getStats = async () => {
 		const me = await client.athletes.getLoggedInAthlete()
@@ -36,7 +32,8 @@ export async function loader({ request }: Route.LoaderArgs) {
 		return list
 			.filter((a) => a.type === "Run")
 			.sort(
-				(a, b) => new Date(b.start_date).getTime() - new Date(a.start_date).getTime(),
+				(a, b) =>
+					new Date(b.start_date).getTime() - new Date(a.start_date).getTime(),
 			)
 	}
 
@@ -57,10 +54,21 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 				<p className="col-span-2 md:text-right">{stats.runs} runs</p>
 			</header>
 			<ul className="border-t divide-y">
-				{list.map(run => {
-					const { id, name, map, workout_type, start_date_local, distance, moving_time } = run
+				{list.map((run) => {
+					const {
+						id,
+						name,
+						map,
+						workout_type,
+						start_date_local,
+						distance,
+						moving_time,
+					} = run
 					return (
-						<li key={id} className="grid grid-cols-[3fr_1fr_auto] md:grid-cols-12 px-2 md:px-8 py-1 items-center">
+						<li
+							key={id}
+							className="grid grid-cols-[3fr_1fr_auto] md:grid-cols-12 px-2 md:px-8 py-1 items-center"
+						>
 							<div className="hidden md:flex col-span-1">
 								<Polyline summary={map.summary_polyline} />
 							</div>
@@ -90,10 +98,12 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 }
 
 function WorkoutTypeTag({ type }: { type: number }) {
-	return getWorkoutTypeTag(type) && (
-		<span className="ml-2 px-1 py-0.5 text-[9px] uppercase tracking-wide border">
-			{getWorkoutTypeTag(type)}
-		</span>
+	return (
+		getWorkoutTypeTag(type) && (
+			<span className="ml-2 px-1 py-0.5 text-[9px] uppercase tracking-wide border">
+				{getWorkoutTypeTag(type)}
+			</span>
+		)
 	)
 }
 
@@ -108,7 +118,9 @@ function CopyRun({ id }: { id: number }) {
 		const data = await response.json()
 
 		const text = new ClipboardItem({
-			"text/plain": new Blob([JSON.stringify(data, null, 2)], { type: "text/plain" }),
+			"text/plain": new Blob([JSON.stringify(data, null, 2)], {
+				type: "text/plain",
+			}),
 		})
 
 		await navigator.clipboard.write([text])
@@ -117,12 +129,11 @@ function CopyRun({ id }: { id: number }) {
 
 	return (
 		<button
+			type="button"
 			onClick={() => handle(id)}
 			className="px-2 py-0.5 inline-grid place-items-center border tracking-wide uppercase disabled:opacity-50 hover:opacity-50 cursor-pointer"
 		>
-			<span className="w-[4ch]">
-				{busy ? "...." : "Copy"}
-			</span>
+			<span className="w-[4ch]">{busy ? "...." : "Copy"}</span>
 		</button>
 	)
 }

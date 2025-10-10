@@ -6,14 +6,22 @@ export async function loader({ request }: Route.LoaderArgs) {
 	// get code from search params
 	const url = new URL(request.url)
 	const code = url.searchParams.get("code")
+
 	if (!code) {
 		throw new Error("No code provided")
 	}
 
+	const clientId = process.env.STRAVA_CLIENT_ID
+	const clientSecret = process.env.STRAVA_CLIENT_SECRET
+
+	if (!clientId || !clientSecret) {
+		throw new Error("Missing Strava client configuration")
+	}
+
 	// exchange code for access token
 	const params = new URLSearchParams({
-		client_id: process.env.STRAVA_CLIENT_ID!,
-		client_secret: process.env.STRAVA_CLIENT_SECRET!,
+		client_id: clientId,
+		client_secret: clientSecret,
 		code,
 	})
 

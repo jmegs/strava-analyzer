@@ -82,6 +82,7 @@ export default function Polyline({
 			strokeLinejoin="round"
 			className={className}
 		>
+			<title>Route Map</title>
 			{!isTreadmill ? <path d={pathData} /> : <path d={treadmillPath} />}
 		</svg>
 	)

@@ -1,4 +1,10 @@
-import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router"
+import {
+	isRouteErrorResponse,
+	Links,
+	Outlet,
+	Scripts,
+	ScrollRestoration,
+} from "react-router"
 
 import type { Route } from "./+types/root"
 import "./app.css"
@@ -20,10 +26,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
 				<meta charSet="utf-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
 				<title>strava thing</title>
-				<meta name="description" content="llm-friendly strava activity summaries" />
+				<meta
+					name="description"
+					content="llm-friendly strava activity summaries"
+				/>
 				<Links />
 			</head>
-			<body className="font-mono text-xs">
+			<body className="font-mono text-xs antialiased">
 				{children}
 				<ScrollRestoration />
 				<Scripts />
@@ -43,9 +52,10 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
 
 	if (isRouteErrorResponse(error)) {
 		message = error.status === 404 ? "404" : "Error"
-		details = error.status === 404
-			? "The requested page could not be found."
-			: error.statusText || details
+		details =
+			error.status === 404
+				? "The requested page could not be found."
+				: error.statusText || details
 	} else if (import.meta.env.DEV && error && error instanceof Error) {
 		details = error.message
 		stack = error.stack
@@ -57,7 +67,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
 			<p>{details}</p>
 			{stack && (
 				<pre className="w-full p-4 overflow-x-auto">
-          <code>{stack}</code>
+					<code>{stack}</code>
 				</pre>
 			)}
 		</main>

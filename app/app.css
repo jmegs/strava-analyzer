@@ -1,5 +1,15 @@
 @import "tailwindcss";
 
+@font-face {
+	font-family: "TX-02";
+	src: url("/TX-02.woff2") format("woff2");
+	font-display: swap;
+}
+
 @theme inline {
-	--font-mono: "TX-02", "TX-02 fallback";
+	--font-mono: "TX-02", ui-monospace, SFMono-Regular, monospace;
+}
+
+:root {
+	color-scheme: light dark;
 }
