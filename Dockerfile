@@ -8,11 +8,11 @@ COPY ./package.json bun.lock* /app/
 WORKDIR /app
 RUN bun install --production --frozen-lockfile
 
-FROM oven/bun:latest AS builder
+FROM node:24-alpine AS builder
 COPY . /app/
 COPY --from=dev /app/node_modules /app/node_modules
 WORKDIR /app
-RUN bun run build
+RUN npm run build
 
 FROM node:24-alpine AS release
 COPY ./package.json /app/
