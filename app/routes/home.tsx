@@ -114,16 +114,24 @@ function CopyRun({ id }: { id: number }) {
 		setBusy(true)
 		// needs to be a native fetch because rr's `fetcher` doesn't return a promise
 		// and safari can't do async clipboard writes
-		const response = await fetch(`/detail/${activityId}`)
-		const data = await response.json()
+		// const response = await fetch(`/detail/${activityId}`)
+		// const data = await response.json()
+		// const detail = useRoute(`/detail/${activityId}`)
 
-		const text = new ClipboardItem({
-			"text/plain": new Blob([JSON.stringify(data, null, 2)], {
-				type: "text/plain",
-			}),
-		})
+		try {
+			const text = new ClipboardItem({
+				"text/plain": fetch(`/detail/${activityId}`)
+					.then((res) => res.json())
+					.then(
+						(data) =>
+							new Blob([JSON.stringify(data, null, 2)], { type: "text/plain" }),
+					),
+			})
 
-		await navigator.clipboard.write([text])
+			await navigator.clipboard.write([text])
+		} catch (err) {
+			console.error("Failed to copy: ", err)
+		}
 		setBusy(false)
 	}
 
