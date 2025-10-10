@@ -16,6 +16,13 @@ export function links() {
 			href: "/icon.svg",
 			type: "image/svg+xml",
 		},
+		{
+			rel: "preload",
+			href: "/TX-02.woff2",
+			as: "font",
+			type: "font/woff2",
+			crossOrigin: "anonymous",
+		},
 	]
 }
 
