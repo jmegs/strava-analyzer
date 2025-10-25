@@ -1,8 +1,9 @@
+<script setup>
+const { loggedIn, user } = useUserSession();
+</script>
 <template>
-  <div>
+  <div class="font-mono text-xs">
     <NuxtRouteAnnouncer />
-    <div class="p-10 font-serif">
-      <p>hello world.</p>
-    </div>
+    <NuxtPage />
   </div>
 </template>
