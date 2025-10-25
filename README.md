@@ -1,75 +1,27 @@
-# Nuxt Minimal Starter
+# Vue Strava
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Nuxt 4 dashboard that pulls the last 90 days of Strava runs, surfaces rolling volume/effort stats, previews routes, and lets you copy a weather-enriched JSON summary per activity.
+
+## Highlights
+- Strava OAuth via `nuxt-auth-utils` (`read`, `activity:read_all` scopes) with automatic token refresh.
+- Stat header compares 7 d vs 28 d mileage, easy-pace change, heart-rate drift, and recent long-run distance.
+- Keyboard-driven run list (j/k/c) with inline polyline preview and one-click JSON export.
+- Activity detail endpoint augments Strava data with Open‑Meteo weather, derived pacing, split breakdowns, and workout tagging.
 
 ## Setup
+1. Create a Strava API app (callback: `http://localhost:3000/api/auth/strava`).
+2. Add a `.env`:
+   ```
+   NUXT_OAUTH_STRAVA_CLIENT_ID=xxxxx
+   NUXT_OAUTH_STRAVA_CLIENT_SECRET=xxxxx
+   NUXT_SESSION_PASSWORD=long-random-string
+   ```
+3. Install deps and run the dev server:
+   ```
+   pnpm install
+   pnpm dev
+   ```
 
-Make sure to install dependencies:
-
-```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+## Scripts
+- `pnpm build` – production build.
+- `pnpm preview` – preview the built app (requires live Strava creds).
