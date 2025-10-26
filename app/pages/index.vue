@@ -2,10 +2,12 @@
 definePageMeta({
 	middleware: ["authenticated"],
 });
-const { data: runs, pending, error } = useFetch("/api/runs");
+const { data: runs, status } = useFetch("/api/runs", { lazy: true });
+const isLoading = computed(() => status.value === "pending");
 </script>
 <template>
-  <div>
+  <div v-if="isLoading"><AppSkeleton /></div>
+  <div v-else>
     <StatHeader :runs />
     <RunList :runs />
   </div>
