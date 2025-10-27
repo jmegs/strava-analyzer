@@ -19,7 +19,7 @@ const dateStr = computed(
 	() => new Date(props.run.start_date_local).toISOString().split("T")[0],
 );
 const miles = computed(() => mToMi(props.run.distance).toFixed(2) + "mi");
-const pace = computed(() => secToHMS(props.run.moving_time));
+const movingTime = computed(() => secToHMS(props.run.moving_time));
 const hr = computed(() => props.run.average_heartrate.toFixed(0) + "bpm");
 const tag = computed(() => getTag(props.run.workout_type));
 </script>
@@ -52,7 +52,7 @@ const tag = computed(() => getTag(props.run.workout_type));
     </div>
 
     <div class="flex col-span-2">
-      {{ pace }}
+      {{ movingTime }}
     </div>
 
     <div class="hidden md:flex col-span-2">
