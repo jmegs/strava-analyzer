@@ -6,7 +6,7 @@ export function useCopyRun() {
 
 		try {
 			const text = new ClipboardItem({
-				"text/plain": await $fetch(`/api/run/${id}`)
+				"text/plain": $fetch(`/api/run/${id}`)
 					.then((json) => JSON.stringify(json, null, 2))
 					.then((str) => new Blob([str], { type: "text/plain" })),
 			});
