@@ -1,10 +1,20 @@
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineNuxtConfig({
-	compatibilityDate: "2025-07-15",
+	compatibilityDate: "2025-10-27",
 	css: ["~/assets/css/app.css"],
 	devtools: { enabled: true },
-	modules: ["@nuxt/fonts", "nuxt-auth-utils"],
+	modules: ["@nuxt/fonts", "nuxt-auth-utils", "nitro-cloudflare-dev"],
+	nitro: {
+		preset: "cloudflare_module",
+		cloudflare: {
+			deployConfig: true,
+			nodeCompat: true,
+			wrangler: {
+				name: "strava-analyzer",
+			},
+		},
+	},
 	runtimeConfig: {
 		oauth: {
 			strava: {

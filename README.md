@@ -1,4 +1,4 @@
-# Vue Strava
+# Strava Analyzer
 
 Nuxt 4 dashboard that pulls the last 90 days of Strava runs, surfaces rolling volume/effort stats, previews routes, and lets you copy a weather-enriched JSON summary per activity.
 
@@ -21,6 +21,10 @@ Nuxt 4 dashboard that pulls the last 90 days of Strava runs, surfaces rolling vo
    pnpm install
    pnpm dev
    ```
+
+## Cloudflare
+- Nitro builds a module worker (`preset: cloudflare_module`); after `pnpm build` run `npx wrangler deploy .output/server`.
+- Local dev uses `nitro-cloudflare-dev`, so `pnpm dev` mirrors the worker runtime.
 
 ## Scripts
 - `pnpm build` – production build.

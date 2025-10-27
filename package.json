@@ -23,6 +23,8 @@
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.16",
     "@types/mapbox__polyline": "^1.0.5",
-    "tailwindcss": "^4.1.16"
+    "nitro-cloudflare-dev": "^0.2.2",
+    "tailwindcss": "^4.1.16",
+    "wrangler": "^4.45.0"
   }
 }
