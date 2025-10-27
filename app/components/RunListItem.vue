@@ -70,7 +70,7 @@ const tag = computed(() => getTag(props.run.workout_type));
         @click="viewFn"
         class="px-1 py-0.5 inline-grid place-items-center border tracking-wide uppercase disabled:opacity-50 hover:opacity-50 cursor-pointer"
       >
-      VST
+      <span class="w-[3ch]">VST</span>
       </button>
       <button
         type="button"
@@ -78,8 +78,8 @@ const tag = computed(() => getTag(props.run.workout_type));
         :disabled="copying"
         @click="copyFn"
       >
-        <span class="w-[4ch]">
-          <template v-if="copying">....</template>
+        <span class="w-[3ch]">
+          <template v-if="copying">...</template>
           <template v-else-if="copied">√</template>
           <template v-else>CPY</template>
         </span>
