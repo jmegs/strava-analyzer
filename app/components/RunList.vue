@@ -24,6 +24,11 @@ function scrollSelected() {
 	}
 }
 
+function visitSelected() {
+	const inst = itemRefs.value.get(selectedId.value!);
+	if (inst && inst.visit) inst.visit();
+}
+
 useKeyboard({
 	j: () => {
 		selectedIdx.value = Math.min(selectedIdx.value + 1, props.runs.length - 1);
@@ -34,6 +39,7 @@ useKeyboard({
 	c: () => {
 		copySelected();
 	},
+	s: () => visitSelected(),
 	"g g": () => {
 		selectedIdx.value = 0;
 	},

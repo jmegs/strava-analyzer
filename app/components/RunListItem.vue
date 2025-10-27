@@ -12,8 +12,13 @@ const { copying, copied, copyRun } = useCopyRun();
 
 const copyFn = () => copyRun(props.run.id);
 const scrollFn = () => liRef.value?.scrollIntoView();
+const stravaUrl = computed(
+	() => `https://www.strava.com/activities/${props.run.id}`,
+);
+const viewFn = async () =>
+	await navigateTo(stravaUrl.value, { open: { target: "_blank" } });
 
-defineExpose({ copy: copyFn, scrollIntoView: scrollFn });
+defineExpose({ copy: copyFn, scrollIntoView: scrollFn, visit: viewFn });
 
 const dateStr = computed(
 	() => new Date(props.run.start_date_local).toISOString().split("T")[0],
@@ -59,17 +64,24 @@ const tag = computed(() => getTag(props.run.workout_type));
       {{ hr }}
     </div>
 
-    <div class="col-span-2 md:col-span-1 flex justify-end">
+    <div class="col-span-2 md:col-span-1 flex gap-2 justify-end">
+      <button 
+        type="button"
+        @click="viewFn"
+        class="px-1 py-0.5 inline-grid place-items-center border tracking-wide uppercase disabled:opacity-50 hover:opacity-50 cursor-pointer"
+      >
+      VST
+      </button>
       <button
         type="button"
-        class="px-2 py-0.5 inline-grid place-items-center border tracking-wide uppercase disabled:opacity-50 hover:opacity-50 cursor-pointer"
+        class="px-1 py-0.5 inline-grid place-items-center border tracking-wide uppercase disabled:opacity-50 hover:opacity-50 cursor-pointer"
         :disabled="copying"
         @click="copyFn"
       >
         <span class="w-[4ch]">
           <template v-if="copying">....</template>
           <template v-else-if="copied">√</template>
-          <template v-else>Copy</template>
+          <template v-else>CPY</template>
         </span>
       </button>
     </div>
