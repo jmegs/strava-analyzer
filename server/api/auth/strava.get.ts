@@ -3,7 +3,8 @@ export default defineOAuthStravaEventHandler({
 		scope: ["read", "activity:read_all"],
 	},
 	async onSuccess(event, { user, tokens }) {
-		await setUserSession(event, {
+		console.log("Successfully logged in...");
+		const session = await setUserSession(event, {
 			user: {
 				athleteId: user.id,
 			},
@@ -13,6 +14,7 @@ export default defineOAuthStravaEventHandler({
 				refreshToken: tokens.refresh_token,
 			},
 		});
+		console.log(`Logged in user ${session.user?.athleteId}`);
 		return sendRedirect(event, "/");
 	},
 	onError(event, error) {
