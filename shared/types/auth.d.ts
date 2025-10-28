@@ -1,6 +1,6 @@
 declare module "#auth-utils" {
 	interface User {
-		athleteId: number;
+		athleteId: number
 	}
 
 	interface UserSession {
@@ -8,10 +8,10 @@ declare module "#auth-utils" {
 	}
 
 	interface SecureSessionData {
-		accessToken: string;
-		expiresAt: number;
-		refreshToken: string;
+		accessToken: string
+		expiresAt: number
+		refreshToken: string
 	}
 }
 
-export {};
+export {}

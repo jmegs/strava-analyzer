@@ -1,76 +1,76 @@
 <template>
-  <svg
-    :width="size"
-    :height="size"
-    :viewBox="`0 0 ${size} ${size}`"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="1.5"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-    :class="className"
-  >
-    <title>Route Map</title>
-    <path :d="isTreadmill ? treadmillPath : pathData" />
-  </svg>
+	<svg
+		:width="size"
+		:height="size"
+		:viewBox="`0 0 ${size} ${size}`"
+		fill="none"
+		stroke="currentColor"
+		stroke-width="1.5"
+		stroke-linecap="round"
+		stroke-linejoin="round"
+		:class="className"
+	>
+		<title>Route Map</title>
+		<path :d="isTreadmill ? treadmillPath : pathData" />
+	</svg>
 </template>
 
 <script setup lang="ts">
-import polyline from "@mapbox/polyline";
+import polyline from "@mapbox/polyline"
 
 const props = withDefaults(
 	defineProps<{
-		summary: string;
-		size?: number; // px square, default 32
-		className?: string; // pass-through classes
+		summary: string
+		size?: number // px square, default 32
+		className?: string // pass-through classes
 	}>(),
 	{
 		size: 32,
 		className: "",
-	},
-);
+	}
+)
 
 // decode + fit to box
 const pathData = computed(() => {
-	const summary = props.summary;
-	const size = props.size;
+	const summary = props.summary
+	const size = props.size
 
-	if (!summary) return "";
+	if (!summary) return ""
 
-	const pts = polyline.decode(summary) as [number, number][];
-	if (pts.length < 2) return "";
+	const pts = polyline.decode(summary) as [number, number][]
+	if (pts.length < 2) return ""
 
 	// bounds
-	const lats = pts.map((p) => p[0]);
-	const lngs = pts.map((p) => p[1]);
-	const minLat = Math.min(...lats);
-	const maxLat = Math.max(...lats);
-	const minLng = Math.min(...lngs);
-	const maxLng = Math.max(...lngs);
-	const w = maxLng - minLng || 1;
-	const h = maxLat - minLat || 1;
+	const lats = pts.map((p) => p[0])
+	const lngs = pts.map((p) => p[1])
+	const minLat = Math.min(...lats)
+	const maxLat = Math.max(...lats)
+	const minLng = Math.min(...lngs)
+	const maxLng = Math.max(...lngs)
+	const w = maxLng - minLng || 1
+	const h = maxLat - minLat || 1
 
 	// map -> [0,size] & flip Y
 	return pts
 		.map(([lat, lng], i) => {
-			const x = ((lng - minLng) / w) * size;
-			const y = (1 - (lat - minLat) / h) * size;
-			return `${i === 0 ? "M" : "L"} ${x},${y}`;
+			const x = ((lng - minLng) / w) * size
+			const y = (1 - (lat - minLat) / h) * size
+			return `${i === 0 ? "M" : "L"} ${x},${y}`
 		})
-		.join(" ");
-});
+		.join(" ")
+})
 
 const isTreadmill = computed(
-	() => !props.summary || props.summary.trim() === "",
-);
+	() => !props.summary || props.summary.trim() === ""
+)
 
 // lil treadmill glyph
 const treadmillPath = computed(() => {
-	const size = props.size;
-	const padding = size * 0.15;
-	const beltY = size * 0.5;
-	const beltHeight = size * 0.2;
-	const rollerRadius = size * 0.08;
+	const size = props.size
+	const padding = size * 0.15
+	const beltY = size * 0.5
+	const beltHeight = size * 0.2
+	const rollerRadius = size * 0.08
 
 	return `
     M ${padding} ${beltY - beltHeight / 2}
@@ -88,6 +88,6 @@ const treadmillPath = computed(() => {
     a ${rollerRadius},${rollerRadius} 0 1,0 -${rollerRadius * 2},0
   `
 		.replace(/\s+/g, " ")
-		.trim();
-});
+		.trim()
+})
 </script>

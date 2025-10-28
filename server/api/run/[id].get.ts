@@ -1,15 +1,15 @@
-import z from "zod";
+import z from "zod"
 
 export default defineEventHandler(async (event) => {
-	const strava = await createStravaClient(event);
-	const schema = z.object({ id: z.coerce.number() });
-	const params = await getValidatedRouterParams(event, schema.parse);
+	const strava = await createStravaClient(event)
+	const schema = z.object({ id: z.coerce.number() })
+	const params = await getValidatedRouterParams(event, schema.parse)
 
-	const act = await strava.activities.getActivityById({ id: params.id });
+	const act = await strava.activities.getActivityById({ id: params.id })
 
-	const [lat, lng] = act.start_latlng;
-	const isoUTC = act.start_date;
-	const weather = await getWeather({ lat, lng, isoUTC });
+	const [lat, lng] = act.start_latlng
+	const isoUTC = act.start_date
+	const weather = await getWeather({ lat, lng, isoUTC })
 
 	return {
 		name: act.name,
@@ -42,5 +42,5 @@ export default defineEventHandler(async (event) => {
 		notes: act.description,
 		private_notes: act.private_note || null,
 		weather,
-	};
-});
+	}
+})
