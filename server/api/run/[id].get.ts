@@ -7,9 +7,14 @@ export default defineEventHandler(async (event) => {
 
 	const act = await strava.activities.getActivityById({ id: params.id })
 
-	const [lat, lng] = act.start_latlng
 	const isoUTC = act.start_date
-	const weather = await getWeather({ lat, lng, isoUTC })
+	const weather = act.start_latlng
+		? await getWeather({
+				lat: act.start_latlng[0],
+				lng: act.start_latlng[1],
+				isoUTC,
+		  })
+		: { temp_f: null, dewpoint_f: null, wind_mph: null }
 
 	return {
 		name: act.name,

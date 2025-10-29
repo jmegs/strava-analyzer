@@ -25,7 +25,9 @@ const dateStr = computed(
 )
 const miles = computed(() => mToMi(props.run.distance).toFixed(2) + "mi")
 const movingTime = computed(() => secToHMS(props.run.moving_time))
-const hr = computed(() => props.run.average_heartrate.toFixed(0) + "bpm")
+const hr = computed(() => 
+	props.run.average_heartrate ? `${props.run.average_heartrate.toFixed(0)}bpm` : "—"
+)
 const tag = computed(() => getTag(props.run.workout_type))
 </script>
 
